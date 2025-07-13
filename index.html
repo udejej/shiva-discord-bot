@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHIVA - Discord Bot Status</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff007a, #ffb74d);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 200px 200px, 300px 300px, 150px 150px;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            position: relative;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .main-heading {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            animation: glitch 2s infinite;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.1em;
+        }
+
+        .sub-heading {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-top: 1rem;
+            opacity: 0.9;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            margin-top: 2rem;
+            opacity: 0.8;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .icons {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .icons a {
+            color: white;
+            font-size: 2.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 1rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+        }
+
+        .icons a:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 183, 77, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .features {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 600px;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ffb74d;
+        }
+
+        .feature h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .feature p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+                text-shadow: 3px 3px 0 #ff007a, -3px -3px 0 #ffb74d;
+            }
+            40% {
+                transform: translate(2px, -2px);
+                text-shadow: 2px 2px 0 #ffb74d, -2px -2px 0 #ff007a;
+            }
+            60% {
+                transform: translate(-2px, -2px);
+                text-shadow: 3px 3px 0 #fff, -3px -3px 0 #ff007a;
+            }
+            80% {
+                transform: translate(2px, 2px);
+                text-shadow: 2px 2px 0 #ff007a, -2px -2px 0 #ffb74d;
+            }
+            100% {
+                transform: translate(0);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .main-heading {
+                font-size: 3.5rem;
+            }
+            
+            .sub-heading {
+                font-size: 1.3rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .icons {
+                gap: 1rem;
+            }
+            
+            .icons a {
+                font-size: 2rem;
+                width: 60px;
+                height: 60px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+                margin-top: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-heading {
+                font-size: 2.5rem;
+            }
+            
+            .sub-heading {
+                font-size: 1rem;
+            }
+            
+            .icons a {
+                font-size: 1.5rem;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-heading">SHIVA</div>
+        <div class="sub-heading">BOT GHOST STATUS REMOVER v3</div>
+        
+        <div class="description">
+            Advanced Discord bot with dynamic status updates, heartbeat monitoring, and ghost status removal capabilities. 
+            Featuring real-time presence management and comprehensive logging system.
+        </div>
+
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Bot Online & Active</span>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-sync-alt"></i>
+                <h3>Dynamic Status</h3>
+                <p>Automatic status rotation every 10 seconds</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Heartbeat Monitor</h3>
+                <p>Real-time health monitoring every 30 seconds</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-ghost"></i>
+                <h3>Ghost Removal</h3>
+                <p>Eliminates ghost status issues automatically</p>
+            </div>
+        </div>
+
+        <div class="icons">
+            <a href="https://discord.com/invite/xQF9f9yUEM" target="_blank" title="Join our Discord Server">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="https://www.youtube.com/@GlaceYT" target="_blank" title="Subscribe to our YouTube Channel">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://github.com/GlaceYT" target="_blank" title="Check out our GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update status indicator based on actual bot status
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.querySelector('.status-indicator span');
+            
+            // Simulate status checking (in a real implementation, this would check actual bot status)
+            function updateStatus() {
+                const isOnline = Math.random() > 0.1; // 90% chance of being online
+                
+                if (isOnline) {
+                    statusDot.style.background = '#00ff88';
+                    statusText.textContent = 'Bot Online & Active';
+                } else {
+                    statusDot.style.background = '#ff4444';
+                    statusText.textContent = 'Bot Connecting...';
+                }
+            }
+            
+            // Update status every 5 seconds
+            setInterval(updateStatus, 5000);
+            
+            // Add hover effects to feature cards
+            const features = document.querySelectorAll('.feature');
+            features.forEach(feature => {
+                feature.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                feature.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
